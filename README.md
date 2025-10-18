@@ -19,9 +19,33 @@ observations with 9 variables. We have data on the upvotes/score on a
 post, time created, and number of comments. Using LLMs, we measured the
 sentiment of each post from negative to positive to neutral.
 
-<div>
+<details class="code-fold">
+<summary>Show the code</summary>
 
-</div>
+``` r
+par(mfrow = c(2, 1))
+sentiment_counts <- as.data.frame(table(UC_posts_data$rate_sentiment)) %>% 
+  rename(value = Freq) %>% 
+  rename(sentiment = Var1)
+ggplot(sentiment_counts, aes(x= "", y= value, fill = sentiment)) +  # SENTIMENT PIE
+  geom_bar(stat="identity", width=1, col = "white") +
+  coord_polar("y", start=0) +
+  labs(title = "Pie Chart of Post Sentiment Ratings") +
+  theme_void() +
+  scale_fill_brewer(palette="Dark2")
+kable(sentiment_counts)
+```
+
+</details>
+
+| sentiment | value |
+|:----------|------:|
+| negative  |  2849 |
+| neutral   |   424 |
+| positive  |   895 |
+
+<img src="README_files/figure-commonmark/figures-side-1.png"
+style="width:50.0%" />
 
 As to be expected from online platforms and social media, the majority
 of posts created on the UC subreddits are negative in sentiment.
@@ -75,7 +99,7 @@ ggplot(UC_posts_data) +
 
 </details>
 
-![](README_files/figure-commonmark/unnamed-chunk-6-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-4-1.png)
 
 #### Time
 
@@ -102,7 +126,7 @@ ggplot(daily_counts) +    # Times series for number of posts in time period
 
 </details>
 
-![](README_files/figure-commonmark/unnamed-chunk-7-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-5-1.png)
 
 We can observe an expected dip in activity during the summer months.
 Let’s do the same for the comments in the time period that we were able
@@ -128,6 +152,6 @@ ggplot(daily_counts) +    # Times series for number of comments in time period (
 
 </details>
 
-![](README_files/figure-commonmark/unnamed-chunk-8-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-6-1.png)
 
 Testing

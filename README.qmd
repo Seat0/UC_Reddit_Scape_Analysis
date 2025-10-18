@@ -99,8 +99,7 @@ UC_data <- UC_posts_data %>%
 
 Our data consists of post and comment data from the subreddits of all 9 UC campuses. This includes UC Berkeley, UCLA, UC Santa Barbara, UC Davis, UC San Diego, UC Santa Cruz, UC Riverside, UC Irvine, and UC Merced. Each subreddit was scraped for about 500 posts from the "Top" posts in the last year. The data set we compiled will have 4189 observations with 9 variables. We have data on the upvotes/score on a post, time created, and number of comments. Using LLMs, we measured the sentiment of each post from negative to positive to neutral.
 
-```{r,  figures-side, fig.show="hold", out.width="50%"}
-par(mfrow = c(2, 1))
+```{r}
 sentiment_counts <- as.data.frame(table(UC_posts_data$rate_sentiment)) %>% 
   rename(value = Freq) %>% 
   rename(sentiment = Var1)
@@ -110,6 +109,9 @@ ggplot(sentiment_counts, aes(x= "", y= value, fill = sentiment)) +  # SENTIMENT 
   labs(title = "Pie Chart of Post Sentiment Ratings") +
   theme_void() +
   scale_fill_brewer(palette="Dark2")
+```
+
+```{r}
 kable(sentiment_counts)
 ```
 

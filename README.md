@@ -25,7 +25,8 @@ sentiment of each post from negative to positive to neutral.
 ``` r
 sentiment_counts <- as.data.frame(table(UC_posts_data$rate_sentiment)) %>% 
   rename(value = Freq) %>% 
-  rename(sentiment = Var1)
+  rename(sentiment = Var1) %>% 
+  arrange(desc(value))
 pie <- ggplot(sentiment_counts, aes(x= "", y= value, fill = sentiment)) +  # SENTIMENT PIE
   geom_bar(stat="identity", width=1, col = "white") +
   coord_polar("y", start=0) +

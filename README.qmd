@@ -32,24 +32,23 @@ library(knitr) # for tables
 
 ################################################## Posts 
 
-setwd("~/")
-Berkeley_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/Berkeley_posts.csv") %>% 
+Berkeley_posts <- read_csv("data/UC_Data/posts/Berkeley_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCDavis_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/UCDavis_posts.csv") %>% 
+UCDavis_posts <- read_csv("data/UC_Data/posts/UCDavis_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCI_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/UCI_posts.csv") %>% 
+UCI_posts <- read_csv("data/UC_Data/posts/UCI_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCLA_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/UCLA_posts.csv") %>% 
+UCLA_posts <- read_csv("data/UC_Data/posts/UCLA_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-ucmerced_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/ucmerced_posts.csv") %>% 
+ucmerced_posts <- read_csv("data/UC_Data/posts/ucmerced_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCR_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/ucr_posts.csv") %>%  #updated ucr posts file
+UCR_posts <- read_csv("data/UC_Data/posts/ucr_posts.csv") %>%  #updated ucr posts file
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCSantaBarbara_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/UCSantaBarbara_posts.csv") %>% 
+UCSantaBarbara_posts <- read_csv("data/UC_Data/posts/UCSantaBarbara_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCSC_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/UCSC_posts.csv") %>% 
+UCSC_posts <- read_csv("data/UC_Data/posts/UCSC_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCSD_posts <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/posts/UCSD_posts.csv") %>% 
+UCSD_posts <- read_csv("data/UC_Data/posts/UCSD_posts.csv") %>% 
   select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
 
 UC_list <- list(Berkeley_posts, UCDavis_posts, UCI_posts, UCLA_posts, ucmerced_posts, 
@@ -59,15 +58,15 @@ UC_posts <- do.call(rbind, UC_list) %>%
 
 ################################################## Comments             
 
-Berkeley_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/Berkeley_comments.csv") 
-UCDavis_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCDavis_comments.csv") 
-UCI_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCI_comments.csv") 
-UCLA_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCLA_comments.csv") 
-ucmerced_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/ucmerced_comments.csv")
-UCR_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCR_comments.csv") 
-UCSantaBarbara_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCSantaBarbara_comments.csv") 
-UCSC_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCSC_comments.csv")
-UCSD_comments <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_Data/comments/UCSD_comments.csv") 
+Berkeley_comments <- read_csv("data/UC_Data/comments/Berkeley_comments.csv") 
+UCDavis_comments <- read_csv("data/UC_Data/comments/UCDavis_comments.csv") 
+UCI_comments <- read_csv("data/UC_Data/comments/UCI_comments.csv") 
+UCLA_comments <- read_csv("data/UC_Data/comments/UCLA_comments.csv") 
+ucmerced_comments <- read_csv("data/UC_Data/comments/ucmerced_comments.csv")
+UCR_comments <- read_csv("data/UC_Data/comments/UCR_comments.csv") 
+UCSantaBarbara_comments <- read_csv("data/UC_Data/comments/UCSantaBarbara_comments.csv") 
+UCSC_comments <- read_csv("data/UC_Data/comments/UCSC_comments.csv")
+UCSD_comments <- read_csv("data/UC_Data/comments/UCSD_comments.csv") 
 
 UC_list <- list(Berkeley_comments, UCDavis_comments, UCI_comments, UCLA_comments, ucmerced_comments,
                 UCR_comments,UCSantaBarbara_comments, UCSC_comments, UCSD_comments)
@@ -75,7 +74,7 @@ UC_comments <- do.call(rbind, UC_list)
 
 ################################################## Post Sentiments and Flairs
 
-post_sentiments_flairs <- read_csv("GitHub/UC_Reddit_Scape_Analysis/data/UC_data/UC_post_sentiments_flair.csv")
+post_sentiments_flairs <- read_csv("data/UC_data/UC_post_sentiments_flair.csv")
 
 UC_posts_data <- post_sentiments_flairs %>% 
   select(post_id, post_sentiment, flair_group) %>% 
@@ -181,4 +180,8 @@ ggplot(daily_counts) +    # Times series for number of comments in time period (
   theme_bw()
 ```
 
-Testing
+#### College Rankings
+
+According to the University of California website, the UC system is the best in the U.S. among public universities in 2026. On September 22nd, the U.S. News & World Report released the 2026 Best Colleges rankings, a list that they disseminate to help students compare universities. UC Berkeley and UCLA are the top two public universities in the country. The UCs are also recognized as top performers on social mobility, with UC Riverside taking the Number 1 spot nationally. Using the rankings by campus below, we can split the 9 UC campuses into 3 different groups, high, middle, and low ranking.
+
+![UC rankings](images/uc_rankings.png){height=400 fig-align="center"}

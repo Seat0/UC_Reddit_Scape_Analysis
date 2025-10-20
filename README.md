@@ -149,4 +149,17 @@ ggplot(daily_counts) +    # Times series for number of comments in time period (
 
 ![](README_files/figure-commonmark/unnamed-chunk-7-1.png)
 
-Testing
+#### College Rankings
+
+According to the University of California website, the UC system is the
+best in the U.S. among public universities in 2026. On September 22nd,
+the U.S. News & World Report released the 2026 Best Colleges rankings, a
+list that they disseminate to help students compare universities. UC
+Berkeley and UCLA are the top two public universities in the country.
+The UCs are also recognized as top performers on social mobility, with
+UC Riverside taking the Number 1 spot nationally. Using the rankings by
+campus below, we can split the 9 UC campuses into 3 different groups,
+high, middle, and low ranking.
+
+<img src="images/uc_rankings.png" data-fig-align="center" height="400"
+alt="UC rankings" />

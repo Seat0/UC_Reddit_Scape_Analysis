@@ -151,15 +151,41 @@ ggplot(daily_counts) +    # Times series for number of comments in time period (
 
 #### College Rankings
 
-According to the University of California website, the UC system is the
-best in the U.S. among public universities in 2026. On September 22nd,
-the U.S. News & World Report released the 2026 Best Colleges rankings, a
-list that they disseminate to help students compare universities. UC
-Berkeley and UCLA are the top two public universities in the country.
-The UCs are also recognized as top performers on social mobility, with
-UC Riverside taking the Number 1 spot nationally. Using the rankings by
-campus below, we can split the 9 UC campuses into 3 different groups,
-high, middle, and low ranking.
+According to a recent [University of California
+article](https://www.universityofcalifornia.edu/news/university-of-california-best-public-university-2026-us-news-best-colleges-rankings),
+the UC system is the best in the U.S. among public universities in 2026.
+On September 22nd, the U.S. News & World Report released the 2026 Best
+Colleges rankings, a list that they disseminate to help students compare
+universities. UC Berkeley and UCLA are the top two public universities
+in the country. The UCs are also recognized as top performers on social
+mobility, with UC Riverside taking the Number 1 spot nationally. Using
+the rankings by campus below, we can evenly split the 9 UC campuses into
+3 different groups, high, middle, and low ranking.
 
 <img src="images/uc_rankings.png" data-fig-align="center" height="400"
 alt="UC rankings" />
+
+We visualize how sentiment over different discussion topics varies
+across college ranks.
+
+<details class="code-fold">
+<summary>Show the code</summary>
+
+``` r
+ggplot(rankings) +
+  geom_point(aes(x=reorder(flair_group, - post_sentiment), y = post_sentiment, fill = rank, color = rank)) +
+  geom_label(aes(x=reorder(flair_group, - post_sentiment), y = post_sentiment, color = rank, label = rank), size = 4) +
+  labs(title = "Mean Sentiment by Category and UC Rankings", x = "Flair Group", y = "Sentiment") +
+  coord_flip() +
+  geom_hline(yintercept = 0, color = "red", linetype = "dotted", lwd = 1) +
+  scale_color_brewer(palette = "Set1") +
+  theme_bw()
+```
+
+</details>
+
+![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
+
+Here we can observe that higher-ranked UC campuses tend to discuss more
+positively across most categories, and lower-ranked campuses have more
+negative sentiment.

@@ -149,6 +149,58 @@ ggplot(daily_counts) +    # Times series for number of comments in time period (
 
 ![](README_files/figure-commonmark/unnamed-chunk-7-1.png)
 
+Using the UNIX timestamps between posts and their subsequent comments, a
+response time variable could be calculated for every comment. This way,
+we can determine what kinds of posts generate a lot of activity among
+subreddit users. The median response time came out to about 8.579 hours.
+
+<details class="code-fold">
+<summary>Show the code</summary>
+
+``` r
+all_groups <- ggplot(UC_time) + 
+  geom_density(aes(response_time,  color = flair_group), lwd = 1) +
+  xlim(0, 8) +
+  labs(title = "Post Response Times Within 8 Hours by Category", x = "Response Time (Hours)", y = "Density") + 
+  theme_classic() 
+
+top3 <- UC_time %>% filter(flair_group %in% c("Social", "Mental Health", "Politics")) %>% 
+ggplot() + 
+  geom_density(aes(response_time,  color = flair_group), lwd = 1) +
+  xlim(0, 8) +
+  labs(title = "Post Response Times Within 8 Hours in Top 3 Categories", x = "Response Time (Hours)", y = "Density") + 
+  theme_classic()
+
+grid.arrange(all_groups, top3)
+```
+
+</details>
+
+![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
+
+Generally, most of the comments replying to a discussion fall within the
+first 4 hours of a post being made.
+
+<details class="code-fold">
+<summary>Show the code</summary>
+
+``` r
+ggplot(UC_time) + 
+  geom_density(aes(response_time,  color = rate_sentiment), lwd = 1) +
+  xlim(0, 4) +
+  labs(title = "Post Response Times Within 4 Hours by Sentiment", x = "Response Time (Hours)", y = "Density") + 
+  theme_classic()
+```
+
+</details>
+
+![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
+
+With this plot we can see that positive and negative posts garner
+quicker response times than neutral posts. This could suggest that
+discussions that better appeal to our emotions illicit quicker
+responses.
+
 #### College Rankings
 
 According to a recent [University of California
@@ -184,7 +236,7 @@ ggplot(rankings) +
 
 </details>
 
-![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-12-1.png)
 
 Here we can observe that higher-ranked UC campuses tend to discuss more
 positively across most categories, and lower-ranked campuses have more

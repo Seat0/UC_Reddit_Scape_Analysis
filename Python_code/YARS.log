@@ -4196,3 +4196,29 @@
 2025-10-22 15:56:19,935 - INFO - Extracting comments
 2025-10-22 15:56:19,935 - INFO - Successfully extracted comments
 2025-10-22 15:56:19,935 - INFO - Successfully scraped post: To the 1% of OOS students, how’d you do it?
+2025-10-22 16:14:21,660 - INFO - Fetching subreddit/user posts for ucr, limit: 500, category: new, time_filter: all
+2025-10-22 16:14:23,389 - INFO - Subreddit/user posts request successful
+2025-10-22 16:14:25,161 - INFO - Sleeping for random time
+2025-10-22 16:14:26,441 - INFO - Subreddit/user posts request successful
+2025-10-22 16:14:28,261 - INFO - Sleeping for random time
+2025-10-22 16:14:29,427 - INFO - Subreddit/user posts request successful
+2025-10-22 16:14:30,805 - INFO - Sleeping for random time
+2025-10-22 16:14:32,135 - INFO - Subreddit/user posts request successful
+2025-10-22 16:14:34,116 - INFO - Sleeping for random time
+2025-10-22 16:14:35,419 - INFO - Subreddit/user posts request successful
+2025-10-22 16:14:37,130 - INFO - Sleeping for random time
+2025-10-22 16:14:37,130 - INFO - Successfully fetched subreddit posts for ucr
+2025-10-22 16:23:59,662 - INFO - Fetching subreddit/user posts for ucr, limit: 600, category: new, time_filter: all
+2025-10-22 16:24:01,729 - INFO - Subreddit/user posts request successful
+2025-10-22 16:24:03,014 - INFO - Sleeping for random time
+2025-10-22 16:24:04,232 - INFO - Subreddit/user posts request successful
+2025-10-22 16:24:05,249 - INFO - Sleeping for random time
+2025-10-22 16:24:06,402 - INFO - Subreddit/user posts request successful
+2025-10-22 16:24:07,749 - INFO - Sleeping for random time
+2025-10-22 16:24:09,445 - INFO - Subreddit/user posts request successful
+2025-10-22 16:24:11,000 - INFO - Sleeping for random time
+2025-10-22 16:24:12,406 - INFO - Subreddit/user posts request successful
+2025-10-22 16:24:13,561 - INFO - Sleeping for random time
+2025-10-22 16:24:14,896 - INFO - Subreddit/user posts request successful
+2025-10-22 16:24:16,122 - INFO - Sleeping for random time
+2025-10-22 16:24:16,122 - INFO - Successfully fetched subreddit posts for ucr

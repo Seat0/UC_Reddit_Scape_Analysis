@@ -33,35 +33,34 @@ library(viridis)
 #| label: import-data-clean
 #| include: false
 
-################################################## Posts 
+################################################## Unnecessary
 
-Berkeley_posts <- fromJSON("data/UC_Data/posts_v2/berkeley_posts.json") 
-UCDavis_posts <- fromJSON("data/UC_Data/posts_v2/UCDavis_posts.json") 
-UCI_posts <- fromJSON("data/UC_Data/posts_v2/UCI_posts.json")
-UCLA_posts <- fromJSON("data/UC_Data/posts_v2/ucla_posts.json") 
-ucmerced_posts <- fromJSON("data/UC_Data/posts_v2/ucmerced_posts.json")
-UCR_posts <- fromJSON("data/UC_Data/posts_v2/ucr_posts.json") 
-UCSantaBarbara_posts <- fromJSON("data/UC_Data/posts_v2/UCSantaBarbara_posts.json") 
-UCSC_posts <- fromJSON("data/UC_Data/posts_v2/UCSC_posts.json") 
-UCSD_posts <- fromJSON("data/UC_Data/posts_v2/ucsd_posts.json") 
+# Berkeley_posts <- fromJSON("data/UC_Data/posts_v2/berkeley_posts.json") 
+# UCDavis_posts <- fromJSON("data/UC_Data/posts_v2/UCDavis_posts.json") 
+# UCI_posts <- fromJSON("data/UC_Data/posts_v2/UCI_posts.json")
+# UCLA_posts <- fromJSON("data/UC_Data/posts_v2/ucla_posts.json") 
+# ucmerced_posts <- fromJSON("data/UC_Data/posts_v2/ucmerced_posts.json")
+# UCR_posts <- fromJSON("data/UC_Data/posts_v2/ucr_posts.json") 
+# UCSantaBarbara_posts <- fromJSON("data/UC_Data/posts_v2/UCSantaBarbara_posts.json") 
+# UCSC_posts <- fromJSON("data/UC_Data/posts_v2/UCSC_posts.json") 
+# UCSD_posts <- fromJSON("data/UC_Data/posts_v2/ucsd_posts.json") 
+# 
+# UC_list <- list(Berkeley_posts, UCDavis_posts, UCI_posts, UCLA_posts, ucmerced_posts, 
+#                 UCR_posts,UCSantaBarbara_posts, UCSC_posts, UCSD_posts)
+# 
+# UC_posts <- do.call(rbind, UC_list) %>% 
+#   mutate(body = na_if(body, "")) %>% 
+#   distinct(title, body, author, .keep_all = TRUE)
+#   # mutate(subreddit = sub(".*/r/([^/]+)/.*", "\\1", permalink)) %>% 
+# 
+# UC_posts <- read_csv("data/UC_Data/UC_posts.csv")
 
-UC_list <- list(Berkeley_posts, UCDavis_posts, UCI_posts, UCLA_posts, ucmerced_posts, 
-                UCR_posts,UCSantaBarbara_posts, UCSC_posts, UCSD_posts)
-
-UC_posts <- do.call(rbind, UC_list) %>% 
-  mutate(body = na_if(body, "")) %>% 
-  distinct(title, body, author, .keep_all = TRUE)
-  # mutate(subreddit = sub(".*/r/([^/]+)/.*", "\\1", permalink)) %>% 
-
-################################################## Post Sentiments and Flairs
+################################################## DATA CLEAN
 
 post_sentiments_flairs <- as.data.frame(read_csv("Python_code/UC_post_sentiments_flair.csv")) %>% 
   distinct(title, subreddit, body, .keep_all = TRUE)
 
-UC_posts_data2 <- UC_posts %>% 
-  left_join(post_sentiments_flairs, by = c("title")) %>% 
-  filter(!is.na(post_sentiment)) %>% 
-  distinct(permalink, .keep_all = TRUE) %>% 
+UC_posts_data2 <- read_csv("Python_code/UC_post_sentiments_flair.csv") %>% 
   mutate(timestamp = as.POSIXct(created_utc, origin = "1970-01-01", tz = "UTC")) %>% 
   filter(!is.na(timestamp)) %>% 
   mutate(date = as.Date(timestamp)) %>% 

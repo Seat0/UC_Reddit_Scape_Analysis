@@ -16,6 +16,7 @@ This project aims to analyze the different micro-political climates across campu
 #| include: false
 
 library(readr) # for reading csv files
+library(jsonlite) # for reading json files
 library(tidyverse) # for data manipulation
 library(wordcloud2) # for wordclouds, also see: "htmltools" package
 library(grid) # for tables
@@ -34,55 +35,42 @@ library(viridis)
 
 ################################################## Posts 
 
-Berkeley_posts <- read_csv("data/UC_Data/posts/Berkeley_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCDavis_posts <- read_csv("data/UC_Data/posts/UCDavis_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCI_posts <- read_csv("data/UC_Data/posts/UCI_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCLA_posts <- read_csv("data/UC_Data/posts/UCLA_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-ucmerced_posts <- read_csv("data/UC_Data/posts/ucmerced_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCR_posts <- read_csv("data/UC_Data/posts/ucr_posts.csv") %>%  #updated ucr posts file
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCSantaBarbara_posts <- read_csv("data/UC_Data/posts/UCSantaBarbara_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCSC_posts <- read_csv("data/UC_Data/posts/UCSC_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
-UCSD_posts <- read_csv("data/UC_Data/posts/UCSD_posts.csv") %>% 
-  select(id, subreddit, selftext, title, upvote_ratio, score, link_flair_text, num_comments, created_utc)
+Berkeley_posts <- fromJSON("data/UC_Data/posts_v2/berkeley_posts.json") 
+UCDavis_posts <- fromJSON("data/UC_Data/posts_v2/UCDavis_posts.json") 
+UCI_posts <- fromJSON("data/UC_Data/posts_v2/UCI_posts.json")
+UCLA_posts <- fromJSON("data/UC_Data/posts_v2/ucla_posts.json") 
+ucmerced_posts <- fromJSON("data/UC_Data/posts_v2/ucmerced_posts.json")
+UCR_posts <- fromJSON("data/UC_Data/posts_v2/ucr_posts.json") 
+UCSantaBarbara_posts <- fromJSON("data/UC_Data/posts_v2/UCSantaBarbara_posts.json") 
+UCSC_posts <- fromJSON("data/UC_Data/posts_v2/UCSC_posts.json") 
+UCSD_posts <- fromJSON("data/UC_Data/posts_v2/ucsd_posts.json") 
 
 UC_list <- list(Berkeley_posts, UCDavis_posts, UCI_posts, UCLA_posts, ucmerced_posts, 
                 UCR_posts,UCSantaBarbara_posts, UCSC_posts, UCSD_posts)
+
 UC_posts <- do.call(rbind, UC_list) %>% 
-  rename(post_id = id)
+  mutate(body = na_if(body, "")) %>% 
+  distinct(permalink, .keep_all = TRUE)
+  # mutate(subreddit = sub(".*/r/([^/]+)/.*", "\\1", permalink)) %>% 
+  # distinct(title, body, subreddit, .keep_all = TRUE)
 
-################################################## Comments             
-
-Berkeley_comments <- read_csv("data/UC_Data/comments/Berkeley_comments.csv") 
-UCDavis_comments <- read_csv("data/UC_Data/comments/UCDavis_comments.csv") 
-UCI_comments <- read_csv("data/UC_Data/comments/UCI_comments.csv") 
-UCLA_comments <- read_csv("data/UC_Data/comments/UCLA_comments.csv") 
-ucmerced_comments <- read_csv("data/UC_Data/comments/ucmerced_comments.csv")
-UCR_comments <- read_csv("data/UC_Data/comments/UCR_comments.csv") 
-UCSantaBarbara_comments <- read_csv("data/UC_Data/comments/UCSantaBarbara_comments.csv") 
-UCSC_comments <- read_csv("data/UC_Data/comments/UCSC_comments.csv")
-UCSD_comments <- read_csv("data/UC_Data/comments/UCSD_comments.csv") 
-
-UC_list <- list(Berkeley_comments, UCDavis_comments, UCI_comments, UCLA_comments, ucmerced_comments,
-                UCR_comments,UCSantaBarbara_comments, UCSC_comments, UCSD_comments)
-UC_comments <- do.call(rbind, UC_list)
 
 ################################################## Post Sentiments and Flairs
 
-post_sentiments_flairs <- read_csv("data/UC_data/UC_post_sentiments_flair.csv")
+post_sentiments_flairs <- as.data.frame(read_csv("Python_code/UC_post_sentiments_flair.csv")) %>% 
+  distinct(title, subreddit, body, .keep_all = TRUE)
+
+UC_posts_data <- UC_posts %>% 
+  select(title, author, created_utc, num_comments, score, permalink, image_url, thumbnail_url, body) %>% 
+  left_join(post_sentiments_flairs, by = c("title")) %>% 
+  filter(!is.na(post_sentiment)) %>% 
+  distinct(title, permalink, subreddit, .keep_all = TRUE)
+
 
 UC_posts_data <- post_sentiments_flairs %>% 
-  select(post_id, post_sentiment, flair_group) %>% 
-  left_join(UC_posts, by = "post_id") %>% 
-  select(-link_flair_text) %>% 
-  distinct() %>% 
+  select(title, body, post_sentiment, flair_group) %>% 
+  left_join(UC_posts, by = c("title", "body")) %>% 
+  filter(!is.na(post_sentiment)) %>% 
   mutate(timestamp = as.POSIXct(created_utc, origin = "1970-01-01", tz = "UTC")) %>% 
   filter(!is.na(timestamp)) %>% 
   mutate(date = as.Date(timestamp)) %>% 

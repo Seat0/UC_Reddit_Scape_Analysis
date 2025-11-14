@@ -52,3 +52,35 @@ UC_data <- bind_rows(
 
 write_csv(UC_data, "../data/UC_data/UC_posts.csv")
 
+
+# Ipeds data 
+
+library(RODBC)
+IPEDS <- odbcConnectAccess2007("../data/IPEDS_Data/IPEDS202324.accdb") 
+
+EF2023A <- sqlFetch(IPEDS, "EF2023A") %>% 
+  filter(EFALEVEL == 1)
+  
+DRVEF2023 <- sqlFetch(IPEDS, "DRVEF2023")
+  
+SFA2223_P1 <- sqlFetch(IPEDS, "SFA2223_P1")
+
+
+IPEDS2324 <- EF2023A %>% 
+  left_join(DRVEF2023, by = "UNITID") %>% 
+  left_join(SFA2223_P1, by = "UNITID") %>% 
+  filter(UNITID %in% c(110653, 110635, 110644, 110662, 445188, 110671, 110705, 110714, 110680))
+
+# irvine 110653
+# Berkely 110635
+# Davis 110644
+# UCLA 110662
+# Merced 445188
+# Riverside 110671
+# Santa Barb 110705
+# Santa Cruz 110714
+# San Diego 110680
+
+
+
+

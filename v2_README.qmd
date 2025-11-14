@@ -33,44 +33,34 @@ library(viridis)
 #| label: import-data-clean
 #| include: false
 
-################################################## Posts 
+################################################## Unnecessary
 
-Berkeley_posts <- fromJSON("data/UC_Data/posts_v2/berkeley_posts.json") 
-UCDavis_posts <- fromJSON("data/UC_Data/posts_v2/UCDavis_posts.json") 
-UCI_posts <- fromJSON("data/UC_Data/posts_v2/UCI_posts.json")
-UCLA_posts <- fromJSON("data/UC_Data/posts_v2/ucla_posts.json") 
-ucmerced_posts <- fromJSON("data/UC_Data/posts_v2/ucmerced_posts.json")
-UCR_posts <- fromJSON("data/UC_Data/posts_v2/ucr_posts.json") 
-UCSantaBarbara_posts <- fromJSON("data/UC_Data/posts_v2/UCSantaBarbara_posts.json") 
-UCSC_posts <- fromJSON("data/UC_Data/posts_v2/UCSC_posts.json") 
-UCSD_posts <- fromJSON("data/UC_Data/posts_v2/ucsd_posts.json") 
+# Berkeley_posts <- fromJSON("data/UC_Data/posts_v2/berkeley_posts.json") 
+# UCDavis_posts <- fromJSON("data/UC_Data/posts_v2/UCDavis_posts.json") 
+# UCI_posts <- fromJSON("data/UC_Data/posts_v2/UCI_posts.json")
+# UCLA_posts <- fromJSON("data/UC_Data/posts_v2/ucla_posts.json") 
+# ucmerced_posts <- fromJSON("data/UC_Data/posts_v2/ucmerced_posts.json")
+# UCR_posts <- fromJSON("data/UC_Data/posts_v2/ucr_posts.json") 
+# UCSantaBarbara_posts <- fromJSON("data/UC_Data/posts_v2/UCSantaBarbara_posts.json") 
+# UCSC_posts <- fromJSON("data/UC_Data/posts_v2/UCSC_posts.json") 
+# UCSD_posts <- fromJSON("data/UC_Data/posts_v2/ucsd_posts.json") 
+# 
+# UC_list <- list(Berkeley_posts, UCDavis_posts, UCI_posts, UCLA_posts, ucmerced_posts, 
+#                 UCR_posts,UCSantaBarbara_posts, UCSC_posts, UCSD_posts)
+# 
+# UC_posts <- do.call(rbind, UC_list) %>% 
+#   mutate(body = na_if(body, "")) %>% 
+#   distinct(title, body, author, .keep_all = TRUE)
+#   # mutate(subreddit = sub(".*/r/([^/]+)/.*", "\\1", permalink)) %>% 
+# 
+# UC_posts <- read_csv("data/UC_Data/UC_posts.csv")
 
-UC_list <- list(Berkeley_posts, UCDavis_posts, UCI_posts, UCLA_posts, ucmerced_posts, 
-                UCR_posts,UCSantaBarbara_posts, UCSC_posts, UCSD_posts)
-
-UC_posts <- do.call(rbind, UC_list) %>% 
-  mutate(body = na_if(body, "")) %>% 
-  distinct(permalink, .keep_all = TRUE)
-  # mutate(subreddit = sub(".*/r/([^/]+)/.*", "\\1", permalink)) %>% 
-  # distinct(title, body, subreddit, .keep_all = TRUE)
-
-
-################################################## Post Sentiments and Flairs
+################################################## DATA CLEAN
 
 post_sentiments_flairs <- as.data.frame(read_csv("Python_code/UC_post_sentiments_flair.csv")) %>% 
-  distinct(title, subreddit, body, .keep_all = TRUE)
+  distinct(permalink, .keep_all = TRUE)
 
-UC_posts_data <- UC_posts %>% 
-  select(title, author, created_utc, num_comments, score, permalink, image_url, thumbnail_url, body) %>% 
-  left_join(post_sentiments_flairs, by = c("title")) %>% 
-  filter(!is.na(post_sentiment)) %>% 
-  distinct(title, permalink, subreddit, .keep_all = TRUE)
-
-
-UC_posts_data <- post_sentiments_flairs %>% 
-  select(title, body, post_sentiment, flair_group) %>% 
-  left_join(UC_posts, by = c("title", "body")) %>% 
-  filter(!is.na(post_sentiment)) %>% 
+UC_posts_data2 <- read_csv("Python_code/UC_post_sentiments_flair.csv") %>% 
   mutate(timestamp = as.POSIXct(created_utc, origin = "1970-01-01", tz = "UTC")) %>% 
   filter(!is.na(timestamp)) %>% 
   mutate(date = as.Date(timestamp)) %>% 
@@ -80,13 +70,11 @@ UC_posts_data <- post_sentiments_flairs %>%
   filter(!is.na(rate_sentiment)) %>% 
   mutate(subreddit = as.factor(subreddit),
          rank = fct_collapse(subreddit,
-                             high = c("berkeley", "ucla", "UCSD"),  # Rankings
-                             mid = c("UCSantaBarbara", "UCI", "UCDavis"),
+                             high = c("berkeley", "ucla", "ucsd"),  # Rankings
+                             mid = c("UCSantaBarbara", "uci", "UCDavis"),
                              low = c("ucr", "ucmerced", "UCSC"))
   )
 
-UC_data <- UC_posts_data %>% 
-  left_join(UC_comments, by = "post_id")
 ```
 
 ## Exploratory Data Analysis
@@ -97,7 +85,7 @@ Our data consists of post and comment data from the subreddits of all 9 UC campu
 
 ```{r}
 
-sentiment_counts <- as.data.frame(table(UC_posts_data$rate_sentiment)) %>% 
+sentiment_counts <- as.data.frame(table(UC_posts_data2$rate_sentiment)) %>% 
   rename(value = Freq) %>% 
   rename(sentiment = Var1) %>% 
   arrange(desc(value))
@@ -118,7 +106,7 @@ As to be expected from online platforms and social media, the majority of posts 
 Using LLMs we were able to categorize each post by common topics of college discussions. These include politics, housing, academics, and more. Let's take a look at the sentiment for each category.
 
 ```{r}
-UC_flair_summary <- UC_posts_data %>% 
+UC_flair_summary <- UC_posts_data2 %>% 
   group_by(flair_group) %>% 
   summarize("Mean Sentiment" = mean(post_sentiment), 
             "Negative" = sum(rate_sentiment == "negative"),
@@ -131,7 +119,7 @@ kable(UC_flair_summary)
 ```
 
 ```{r}
-ggplot(UC_posts_data) +
+ggplot(UC_posts_data2) +
   geom_boxplot(aes(x=reorder(flair_group, post_sentiment), post_sentiment, fill = flair_group)) + # sentiment by flair
   labs(title = "Average Sentiment by Flair Group", x = "Flair", y = "Sentiment") +
   geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
@@ -146,7 +134,7 @@ The subreddits also gave us UNIX time stamps for when each post and comment was 
 #| fig-height: 3
 #| fig-width: 8
 
-daily_counts <- UC_posts_data %>%
+daily_counts <- UC_posts_data2 %>%
   count(date)
 ggplot(daily_counts) +    # Times series for number of posts in time period
   geom_line(aes(x = date, y = n)) +
@@ -156,70 +144,6 @@ ggplot(daily_counts) +    # Times series for number of posts in time period
     date_labels = "%b %Y") +       # Format labels to show abbreviated month names (e.g., Jan, Feb)
   theme_bw()
 ```
-
-We can observe an expected dip in activity during the summer months. Let's do the same for the comments in the time period that we were able to scrape.
-
-```{r}
-#| fig-height: 3
-#| fig-width: 8
-UC_comments_time <- UC_comments %>% 
-  mutate(timestamp = as.POSIXct(created_utc, origin = "1970-01-01", tz = "UTC")) %>% 
-  mutate(date = as.Date(timestamp))
-daily_counts <- UC_comments_time %>% 
-  count(date)
-ggplot(daily_counts) +    # Times series for number of comments in time period (that were able to be scraped)
-  geom_line(aes(x = date, y = n)) +
-  labs(title = "Times Series of Comment Counts", x = "Date", y = "Number of Comments") +
-  scale_x_date(
-    date_breaks = "2 month",  # Set breaks at every month
-    date_labels = "%b %Y") +       # Format labels to show abbreviated month names (e.g., Jan, Feb)
-  theme_bw()
-```
-
-Using the UNIX timestamps between posts and their subsequent comments, a response time variable could be calculated for every comment. This way, we can determine what kinds of posts generate a lot of activity among subreddit users. The median response time came out to about 8.579 hours.
-
-```{r}
-#| label: create-time-data
-#| include: false
-UC_time <- UC_data %>% 
-  mutate(response_time = (created_utc.y - created_utc.x)/3600) %>% # in hours
-  filter(!is.na(response_time)) %>% 
-  mutate(log_response_time = log(response_time)) # log response times
-
-median(UC_time$response_time)
-mean(UC_time$response_time)
-```
-
-```{r}
-#| warning: false
-all_groups <- ggplot(UC_time) + 
-  geom_density(aes(response_time,  color = flair_group), lwd = 1) +
-  xlim(0, 8) +
-  labs(title = "Post Response Times Within 8 Hours by Category", x = "Response Time (Hours)", y = "Density") + 
-  theme_classic() 
-
-top3 <- UC_time %>% filter(flair_group %in% c("Social", "Mental Health", "Politics")) %>% 
-ggplot() + 
-  geom_density(aes(response_time,  color = flair_group), lwd = 1) +
-  xlim(0, 8) +
-  labs(title = "Post Response Times Within 8 Hours in Top 3 Categories", x = "Response Time (Hours)", y = "Density") + 
-  theme_classic()
-
-grid.arrange(all_groups, top3)
-```
-
-Generally, most of the comments replying to a discussion fall within the first 4 hours of a post being made. 
-
-```{r}
-#| warning: false
-ggplot(UC_time) + 
-  geom_density(aes(response_time,  color = rate_sentiment), lwd = 1) +
-  xlim(0, 4) +
-  labs(title = "Post Response Times Within 4 Hours by Sentiment", x = "Response Time (Hours)", y = "Density") + 
-  theme_classic()
-```
-
-With this plot we can see that positive and negative posts garner quicker response times than neutral posts. This could suggest that discussions that better appeal to our emotions illicit quicker responses.
 
 #### College Rankings
 
@@ -232,7 +156,7 @@ We visualize how sentiment over different discussion topics varies across colleg
 ```{r}
 #| label: rankings
 #| include: false
-rankings <- UC_posts_data %>% 
+rankings <- UC_posts_data2 %>% 
   group_by(flair_group, rank) %>% 
   summarize(post_sentiment = mean(post_sentiment), num_posts = n())
 ```
@@ -249,3 +173,14 @@ ggplot(rankings) +
 ```
 
 Here we can observe that higher-ranked UC campuses tend to discuss more positively across most categories, and lower-ranked campuses have more negative sentiment.
+
+```{r}
+ggplot(rankings) +
+  geom_point(aes(x=reorder(flair_group, - num_posts), y = num_posts, fill = rank, color = rank)) +
+  geom_label(aes(x=reorder(flair_group, - num_posts), y = num_posts, color = rank, label = rank), size = 4) +
+  labs(title = "Number of Posts by Category and UC Rankings", x = "Flair Group", y = "Sentiment") +
+  coord_flip() +
+  geom_hline(yintercept = 0, color = "red", linetype = "dotted", lwd = 1) +
+  scale_color_brewer(palette = "Set1") +
+  theme_bw()
+```

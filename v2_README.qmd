@@ -178,7 +178,7 @@ Here we can observe that higher-ranked UC campuses tend to discuss more positive
 ggplot(rankings) +
   geom_point(aes(x=reorder(flair_group, - num_posts), y = num_posts, fill = rank, color = rank)) +
   geom_label(aes(x=reorder(flair_group, - num_posts), y = num_posts, color = rank, label = rank), size = 4) +
-  labs(title = "Number of Posts by Category and UC Rankings", x = "Flair Group", y = "Sentiment") +
+  labs(title = "Number of Posts by Category and UC Rankings", x = "Flair Group", y = "Number of Posts") +
   coord_flip() +
   geom_hline(yintercept = 0, color = "red", linetype = "dotted", lwd = 1) +
   scale_color_brewer(palette = "Set1") +

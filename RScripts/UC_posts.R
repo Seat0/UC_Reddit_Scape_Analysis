@@ -71,6 +71,9 @@ IPEDS2324 <- EF2023A %>%
   left_join(SFA2223_P1, by = "UNITID") %>% 
   filter(UNITID %in% c(110653, 110635, 110644, 110662, 445188, 110671, 110705, 110714, 110680))
 
+write_csv(IPEDS2324, "../data/IPEDS_Data/UC_IPEDS.csv")
+
+
 # irvine 110653
 # Berkely 110635
 # Davis 110644
@@ -82,5 +85,55 @@ IPEDS2324 <- EF2023A %>%
 # San Diego 110680
 
 
+uci_top <- fromJSON("../data/UC_data/posts_v2_top/uci_posts_top.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "uci")
+
+berkeley_top <- fromJSON("../data/UC_data/posts_v2/berkeley_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "berkeley")
+
+UCDavis_top <- fromJSON("../data/UC_data/posts_v2/UCDavis_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "UCDavis")
+
+ucla_top <- fromJSON("../data/UC_data/posts_v2/ucla_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "ucla")
+
+ucmerced_top <- fromJSON("../data/UC_data/posts_v2/ucmerced_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "ucmerced")
+
+ucr_top <- fromJSON("../data/UC_data/posts_v2/ucr_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "ucr")
+
+UCSantaBarbara_top <- fromJSON("../data/UC_data/posts_v2/UCSantaBarbara_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "UCSantaBarbara")
+
+UCSC_top <- fromJSON("../data/UC_data/posts_v2/UCSC_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "UCSC")
+
+ucsd_top <- fromJSON("../data/UC_data/posts_v2/ucsd_posts.JSON") %>%
+  distinct(permalink, .keep_all = TRUE) %>%
+  mutate(subreddit = "ucsd")
+
+# Combine into one dataset
+UC_data_top <- bind_rows(
+  uci_top,
+  berkeley_top,
+  UCDavis_top,
+  ucla_top,
+  ucmerced_top,
+  ucr_top,
+  UCSantaBarbara_top,
+  UCSC_top,
+  ucsd_top
+)
+
+write_csv(UC_data_top, "../data/UC_data/UC_posts_top.csv")
 
 

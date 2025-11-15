@@ -69,7 +69,20 @@ SFA2223_P1 <- sqlFetch(IPEDS, "SFA2223_P1")
 IPEDS2324 <- EF2023A %>% 
   left_join(DRVEF2023, by = "UNITID") %>% 
   left_join(SFA2223_P1, by = "UNITID") %>% 
-  filter(UNITID %in% c(110653, 110635, 110644, 110662, 445188, 110671, 110705, 110714, 110680))
+  filter(UNITID %in% c(110653, 110635, 110644, 110662, 445188, 110671, 110705, 110714, 110680)) %>% 
+  mutate(
+    subreddit = case_when(
+      UNITID == 110653 ~ "uci",
+      UNITID == 110635 ~ "berkeley",
+      UNITID == 110644 ~ "UCDavis",
+      UNITID == 110662 ~ "ucla",
+      UNITID == 445188 ~ "ucmerced",
+      UNITID == 110671 ~ "ucr",
+      UNITID == 110705 ~ "UCSantaBarbara",
+      UNITID == 110714 ~ "UCSC",
+      UNITID == 110680 ~ "ucsd")) %>% 
+  select(subreddit, everything())
+
 
 write_csv(IPEDS2324, "../data/IPEDS_Data/UC_IPEDS.csv")
 
